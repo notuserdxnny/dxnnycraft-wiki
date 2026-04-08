@@ -3,1217 +3,817 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DxnnyCraft Wiki</title>
+<title>DxnnyCraft Wiki — Season 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Bebas+Neue&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:       #0a0a0f;
-    --surface:  #111118;
-    --border:   #1e1e2e;
-    --accent:   #ff6b35;
-    --accent2:  #ffd700;
-    --text:     #e8e8f0;
-    --muted:    #666680;
-    --sidebar:  180px;
-    --mono:     'Space Mono', monospace;
-    --sans:     'Syne', sans-serif;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE OVERLAY ─────────────────────────────── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
-
-  /* ── HEADER ────────────────────────────────────── */
-  header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 56px;
-    background: rgba(10,10,15,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    gap: 16px;
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .logo-dot {
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  .header-ip {
-    margin-left: auto;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--border);
-    padding: 4px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-
-  .header-ip:hover { color: var(--accent2); }
-
-  /* ── SEARCH ─────────────────────────────────────── */
-  .search-wrap {
-    flex: 1;
-    max-width: 320px;
-    position: relative;
-  }
-
-  .search-wrap input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 12px 6px 32px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .search-wrap input:focus { border-color: var(--accent); }
-  .search-wrap input::placeholder { color: var(--muted); }
-
-  .search-icon {
-    position: absolute;
-    left: 10px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  /* ── LAYOUT ─────────────────────────────────────── */
-  .layout {
-    display: flex;
-    margin-top: 56px;
-    min-height: calc(100vh - 56px);
-  }
-
-  /* ── SIDEBAR ────────────────────────────────────── */
-  nav {
-    width: var(--sidebar);
-    min-width: var(--sidebar);
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 24px 0;
-    position: sticky;
-    top: 56px;
-    height: calc(100vh - 56px);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .nav-section {
-    padding: 0 16px;
-    margin-bottom: 24px;
-  }
-
-  .nav-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    padding: 0 4px;
-  }
-
-  .nav-link {
-    display: block;
-    padding: 6px 8px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    text-decoration: none;
-    transition: all 0.15s;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .nav-link:hover, .nav-link.active {
-    color: var(--text);
-    background: var(--border);
-  }
-
-  .nav-link.active { color: var(--accent); border-left: 2px solid var(--accent); border-radius: 0 4px 4px 0; }
-
-  /* ── MAIN CONTENT ───────────────────────────────── */
-  main {
-    flex: 1;
-    padding: 48px;
-    max-width: 860px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ── PAGE ───────────────────────────────────────── */
-  .page { display: none; animation: fadeIn 0.3s ease; }
-  .page.active { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── HERO ───────────────────────────────────────── */
-  .hero {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 48px;
-    margin-bottom: 40px;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, rgba(255,107,53,0.05) 0%, transparent 60%);
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .hero-tag::before {
-    content: '';
-    display: inline-block;
-    width: 20px; height: 1px;
-    background: var(--accent);
-  }
-
-  .hero h1 {
-    font-size: 48px;
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -1px;
-    margin-bottom: 16px;
-  }
-
-  .hero h1 span { color: var(--accent); }
-
-  .hero p {
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.6;
-    max-width: 500px;
-    margin-bottom: 24px;
-  }
-
-  .hero-badges {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .badge {
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 99px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    letter-spacing: 1px;
-  }
-
-  .badge.accent { border-color: var(--accent); color: var(--accent); }
-
-  /* ── CARDS GRID ─────────────────────────────────── */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: block;
-  }
-
-  .card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255,107,53,0.1);
-  }
-
-  .card-icon { font-size: 24px; margin-bottom: 12px; }
-  .card-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
-
-  /* ── PAGE TYPOGRAPHY ────────────────────────────── */
-  .page-header { margin-bottom: 32px; }
-
-  .page-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--accent);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .page-title {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-  }
-
-  .page-desc {
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  h2 {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 32px 0 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  h3 {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 24px 0 8px;
-    color: var(--accent2);
-  }
-
-  p {
-    font-size: 14px;
-    line-height: 1.7;
-    color: #b0b0c8;
-    margin-bottom: 12px;
-  }
-
-  /* ── CODE BLOCKS ────────────────────────────────── */
-  .code {
-    background: #0d0d14;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: #a8e6cf;
-    margin: 12px 0;
-    overflow-x: auto;
-    line-height: 1.8;
-  }
-
-  .code .cmd { color: var(--accent); }
-  .code .arg { color: var(--accent2); }
-  .code .comment { color: var(--muted); }
-
-  /* ── TABLES ─────────────────────────────────────── */
-  .table-wrap { overflow-x: auto; margin: 16px 0; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  th {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-
-  td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(30,30,46,0.5);
-    color: #c0c0d8;
-    font-size: 13px;
-  }
-
-  tr:hover td { background: rgba(255,107,53,0.03); }
-
-  td code {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    background: rgba(255,107,53,0.08);
-    padding: 2px 6px;
-    border-radius: 3px;
-  }
-
-  /* ── CALLOUTS ───────────────────────────────────── */
-  .callout {
-    border-left: 3px solid var(--accent);
-    background: rgba(255,107,53,0.05);
-    padding: 14px 16px;
-    border-radius: 0 6px 6px 0;
-    margin: 16px 0;
-    font-size: 13px;
-    color: #c0c0d8;
-    line-height: 1.6;
-  }
-
-  .callout.tip { border-color: #4ade80; background: rgba(74,222,128,0.05); }
-  .callout.warn { border-color: var(--accent2); background: rgba(255,215,0,0.05); }
-
-  .callout strong { color: var(--text); }
-
-  /* ── RANK LADDER ─────────────────────────────────── */
-  .ranks {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 16px 0;
-  }
-
-  .rank-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 16px;
-  }
-
-  .rank-name {
-    font-weight: 700;
-    font-size: 14px;
-    min-width: 80px;
-  }
-
-  .rank-cost { font-family: var(--mono); font-size: 11px; color: var(--muted); flex: 1; }
-  .rank-arrow { color: var(--muted); }
-
-  /* ── ITEM GRID ───────────────────────────────────── */
-  .items {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-    margin: 16px 0;
-  }
-
-  .item-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px;
-    text-align: center;
-  }
-
-  .item-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
-  .item-name  { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-  .item-value { font-family: var(--mono); font-size: 10px; color: var(--accent); }
-
-  /* ── SEARCH RESULTS ─────────────────────────────── */
-  #search-results {
-    position: absolute;
-    top: 100%;
-    left: 0; right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    z-index: 200;
-    display: none;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .search-result {
-    padding: 10px 14px;
-    cursor: pointer;
-    font-size: 12px;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-
-  .search-result:hover { background: var(--border); }
-  .search-result-title { font-weight: 700; color: var(--text); }
-  .search-result-page  { color: var(--muted); font-size: 10px; font-family: var(--mono); }
-
-  /* ── MOBILE ─────────────────────────────────────── */
-  .menu-btn {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 4px;
-  }
-
-  @media (max-width: 768px) {
-    nav { position: fixed; left: -200px; top: 56px; bottom: 0; z-index: 90; transition: left 0.3s; }
-    nav.open { left: 0; }
-    main { padding: 24px 20px; }
-    .menu-btn { display: block; }
-    .hero { padding: 28px; }
-    .hero h1 { font-size: 32px; }
-    .cards { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* ── SCROLLBAR ───────────────────────────────────── */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+:root {
+  --bg: #080810;
+  --surface: #0f0f1a;
+  --border: #1a1a2e;
+  --accent: #ff3333;
+  --accent2: #ff6600;
+  --gold: #ffd700;
+  --text: #e8e8f0;
+  --muted: #5a5a7a;
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --mono: 'JetBrains Mono', monospace;
+  --display: 'Bebas Neue', cursive;
+  --sans: 'Outfit', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% 20%, rgba(255,51,51,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(255,102,0,0.03) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 54px;
+  background: rgba(8,8,16,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.season-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.search-wrap {
+  flex: 1;
+  max-width: 280px;
+  position: relative;
+  margin-left: auto;
+}
+
+.search-wrap input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px 5px 30px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-wrap input:focus { border-color: var(--accent); }
+.search-wrap input::placeholder { color: var(--muted); }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 11px; }
+
+#search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 200;
+  display: none;
+}
+.search-result { padding: 9px 12px; cursor: pointer; font-size: 12px; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.search-result:hover { background: var(--border); }
+.search-result-title { font-weight: 600; color: var(--text); }
+.search-result-page { color: var(--muted); font-size: 10px; font-family: var(--mono); }
+
+.header-ip {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--border);
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.header-ip:hover { color: var(--gold); }
+
+.menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 18px; cursor: pointer; }
+
+/* LAYOUT */
+.layout { display: flex; margin-top: 54px; min-height: calc(100vh - 54px); }
+
+/* SIDEBAR */
+nav {
+  width: 200px;
+  min-width: 200px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  position: sticky;
+  top: 54px;
+  height: calc(100vh - 54px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  z-index: 10;
+}
+
+.nav-section { padding: 0 14px; margin-bottom: 20px; }
+.nav-label { font-family: var(--mono); font-size: 8px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; padding: 0 4px; }
+.nav-link { display: block; padding: 5px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--muted); text-decoration: none; transition: all 0.15s; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.nav-link:hover { color: var(--text); background: var(--border); }
+.nav-link.active { color: var(--accent); background: rgba(255,51,51,0.08); border-left: 2px solid var(--accent); border-radius: 0 4px 4px 0; }
+
+/* MAIN */
+main { flex: 1; padding: 40px 44px; max-width: 880px; position: relative; z-index: 1; }
+
+/* PAGES */
+.page { display: none; animation: fadeIn 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* HERO */
+.hero {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 44px;
+  margin-bottom: 36px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,51,51,0.04) 0%, transparent 60%);
+}
+.hero::after {
+  content: 'S1';
+  position: absolute;
+  right: -10px; top: -10px;
+  font-family: var(--display);
+  font-size: 140px;
+  color: rgba(255,51,51,0.04);
+  line-height: 1;
+  pointer-events: none;
+}
+.hero-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.hero-tag::before { content: ''; display: inline-block; width: 16px; height: 1px; background: var(--accent); }
+.hero h1 { font-family: var(--display); font-size: 56px; line-height: 1; letter-spacing: 2px; margin-bottom: 12px; }
+.hero h1 span { color: var(--accent); }
+.hero p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 480px; margin-bottom: 20px; }
+.hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge { font-family: var(--mono); font-size: 9px; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--border); color: var(--muted); letter-spacing: 1px; }
+.badge.red { border-color: var(--accent); color: var(--accent); }
+.badge.gold { border-color: var(--gold); color: var(--gold); }
+.badge.green { border-color: var(--green); color: var(--green); }
+
+/* CARDS */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-bottom: 36px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: block; }
+.card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,51,51,0.08); }
+.card-icon { font-size: 22px; margin-bottom: 10px; }
+.card-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.card-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* PAGE TYPOGRAPHY */
+.page-header { margin-bottom: 28px; }
+.page-tag { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+.page-title { font-family: var(--display); font-size: 40px; letter-spacing: 1px; margin-bottom: 6px; }
+.page-desc { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+h2 { font-size: 17px; font-weight: 700; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+h3 { font-size: 13px; font-weight: 700; margin: 20px 0 6px; color: var(--gold); }
+
+p { font-size: 13px; line-height: 1.7; color: #a0a0c0; margin-bottom: 10px; }
+
+/* CODE */
+.code { background: #060610; border: 1px solid var(--border); border-radius: 6px; padding: 14px; font-family: var(--mono); font-size: 11px; color: #7ec8a0; margin: 10px 0; overflow-x: auto; line-height: 1.9; }
+.code .cmd { color: var(--accent); }
+.code .arg { color: var(--gold); }
+.code .comment { color: var(--muted); }
+
+/* TABLES */
+.table-wrap { overflow-x: auto; margin: 14px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+td { padding: 9px 12px; border-bottom: 1px solid rgba(26,26,46,0.5); color: #b0b0cc; font-size: 12px; }
+tr:hover td { background: rgba(255,51,51,0.02); }
+td code { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(255,51,51,0.08); padding: 2px 5px; border-radius: 3px; }
+
+/* CALLOUTS */
+.callout { border-left: 3px solid var(--accent); background: rgba(255,51,51,0.04); padding: 12px 14px; border-radius: 0 6px 6px 0; margin: 14px 0; font-size: 12px; color: #b0b0cc; line-height: 1.6; }
+.callout.tip { border-color: var(--green); background: rgba(34,197,94,0.04); }
+.callout.warn { border-color: var(--gold); background: rgba(255,215,0,0.04); }
+.callout strong { color: var(--text); }
+
+/* RANK LADDER */
+.ranks { display: flex; flex-direction: column; gap: 6px; margin: 14px 0; }
+.rank-row { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+.rank-name { font-weight: 700; font-size: 13px; min-width: 90px; }
+.rank-cost { font-family: var(--mono); font-size: 10px; color: var(--muted); flex: 1; }
+
+/* CRATE CARDS */
+.crate-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+.crate-card { border-radius: 8px; padding: 18px; border: 1px solid; }
+.crate-card.common { border-color: #555; background: rgba(255,255,255,0.02); }
+.crate-card.rare { border-color: #3b82f6; background: rgba(59,130,246,0.04); }
+.crate-card.legendary { border-color: var(--gold); background: rgba(255,215,0,0.04); }
+.crate-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.crate-title.common { color: #ddd; }
+.crate-title.rare { color: #60a5fa; }
+.crate-title.legendary { color: var(--gold); }
+.crate-item { font-size: 11px; color: var(--muted); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+.crate-item::before { content: '▸'; color: var(--accent); font-size: 9px; }
+
+/* ITEMS GRID */
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 14px 0; }
+.item-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px; text-align: center; }
+.item-emoji { font-size: 24px; margin-bottom: 6px; display: block; }
+.item-name { font-size: 11px; font-weight: 700; margin-bottom: 3px; }
+.item-value { font-family: var(--mono); font-size: 9px; color: var(--accent); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  nav { position: fixed; left: -210px; top: 54px; bottom: 0; z-index: 90; transition: left 0.3s; }
+  nav.open { left: 0; }
+  main { padding: 24px 18px; }
+  .menu-btn { display: block; }
+  .hero { padding: 24px; }
+  .hero h1 { font-size: 38px; }
+  .cards { grid-template-columns: 1fr 1fr; }
+  .crate-grid { grid-template-columns: 1fr; }
+  .header-ip { display: none; }
+}
 </style>
 </head>
 <body>
 
 <header>
   <button class="menu-btn" onclick="toggleNav()">☰</button>
-  <div class="logo">
-    <span class="logo-dot"></span>
-    DxnnyCraft
-  </div>
+  <div class="logo">DxnnyCraft <span class="season-badge">SEASON 1</span></div>
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
     <input type="text" id="search" placeholder="Search wiki..." oninput="doSearch(this.value)" onfocus="showResults()" onblur="setTimeout(hideResults,200)">
     <div id="search-results"></div>
   </div>
-  <div class="header-ip" onclick="copyIP()" title="Click to copy">
-    DxnnyCraft.minehut.gg
-  </div>
+  <div class="header-ip" onclick="copyIP()" title="Click to copy">DxnnyCraft.minehut.gg</div>
 </header>
 
 <div class="layout">
-  <nav id="nav">
-    <div class="nav-section">
-      <div class="nav-label">Getting Started</div>
-      <a class="nav-link active" href="#" onclick="show('home')">🏠 Home</a>
-      <a class="nav-link" href="#" onclick="show('quickstart')">⚡ Quick Start</a>
-      <a class="nav-link" href="#" onclick="show('rules')">📋 Rules</a>
+<nav id="nav">
+  <div class="nav-section">
+    <div class="nav-label">Start Here</div>
+    <a class="nav-link active" onclick="show('home')">🏠 Home</a>
+    <a class="nav-link" onclick="show('quickstart')">⚡ Quick Start</a>
+    <a class="nav-link" onclick="show('rules')">📋 Rules</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Lifesteal</div>
+    <a class="nav-link" onclick="show('hearts')">❤ Hearts</a>
+    <a class="nav-link" onclick="show('combat')">⚔ Combat</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Economy</div>
+    <a class="nav-link" onclick="show('economy')">💰 Economy</a>
+    <a class="nav-link" onclick="show('auction')">🏷️ Auction House</a>
+    <a class="nav-link" onclick="show('shops')">🏪 Shops</a>
+    <a class="nav-link" onclick="show('lottery')">🎰 Lottery</a>
+    <a class="nav-link" onclick="show('crates')">📦 Crates</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Progression</div>
+    <a class="nav-link" onclick="show('ranks')">🏆 Ranks</a>
+    <a class="nav-link" onclick="show('donor')">💎 Donor Ranks</a>
+    <a class="nav-link" onclick="show('daily')">🎁 Daily Rewards</a>
+    <a class="nav-link" onclick="show('bounty')">☠️ Bounties</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Features</div>
+    <a class="nav-link" onclick="show('alchemy')">⚗️ Alchemy</a>
+    <a class="nav-link" onclick="show('claims')">🛡️ Land Claims</a>
+    <a class="nav-link" onclick="show('commands')">📖 Commands</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-tag">Official Wiki — Season 1</div>
+    <h1>Welcome to<br><span>DxnnyCraft</span></h1>
+    <p>The complete guide to playing DxnnyCraft Lifesteal SMP. Steal hearts, dominate the leaderboards, and survive Season 1.</p>
+    <div class="hero-badges">
+      <span class="badge red">Java 1.20.6</span>
+      <span class="badge gold">Season 1</span>
+      <span class="badge green">Now Live</span>
+      <span class="badge">DxnnyCraft.minehut.gg</span>
     </div>
-    <div class="nav-section">
-      <div class="nav-label">Economy</div>
-      <a class="nav-link" href="#" onclick="show('economy')">💰 Economy</a>
-      <a class="nav-link" href="#" onclick="show('auction')">🏷️ Auction House</a>
-      <a class="nav-link" href="#" onclick="show('shops')">🏪 Shops</a>
-      <a class="nav-link" href="#" onclick="show('lottery')">🎰 Lottery</a>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Progression</div>
-      <a class="nav-link" href="#" onclick="show('ranks')">🏆 Ranks</a>
-      <a class="nav-link" href="#" onclick="show('daily')">🎁 Daily Rewards</a>
-      <a class="nav-link" href="#" onclick="show('quests')">📜 Quests</a>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Combat</div>
-      <a class="nav-link" href="#" onclick="show('pvp')">⚔️ PvP Arena</a>
-      <a class="nav-link" href="#" onclick="show('duels')">🤺 Duels</a>
-      <a class="nav-link" href="#" onclick="show('bounty')">☠️ Bounties</a>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">Features</div>
-      <a class="nav-link" href="#" onclick="show('alchemy')">⚗️ Alchemy</a>
-      <a class="nav-link" href="#" onclick="show('claims')">🛡️ Land Claims</a>
-      <a class="nav-link" href="#" onclick="show('commands')">📖 Commands</a>
-    </div>
-  </nav>
+  </div>
 
-  <main>
+  <div class="cards">
+    <a class="card" onclick="show('quickstart')"><div class="card-icon">⚡</div><div class="card-title">Quick Start</div><div class="card-desc">New? Start here.</div></a>
+    <a class="card" onclick="show('hearts')"><div class="card-icon">❤</div><div class="card-title">Hearts</div><div class="card-desc">How lifesteal works.</div></a>
+    <a class="card" onclick="show('crates')"><div class="card-icon">📦</div><div class="card-title">Crates</div><div class="card-desc">Common, Rare, Legendary.</div></a>
+    <a class="card" onclick="show('ranks')"><div class="card-icon">🏆</div><div class="card-title">Ranks</div><div class="card-desc">Rank up from Member to Legend.</div></a>
+    <a class="card" onclick="show('alchemy')"><div class="card-icon">⚗️</div><div class="card-title">Alchemy</div><div class="card-desc">Grow herbs and trade.</div></a>
+    <a class="card" onclick="show('commands')"><div class="card-icon">📖</div><div class="card-title">Commands</div><div class="card-desc">Full command reference.</div></a>
+  </div>
 
-    <!-- ── HOME ─────────────────────────────────── -->
-    <div class="page active" id="page-home">
-      <div class="hero">
-        <div class="hero-tag">Official Wiki</div>
-        <h1>Welcome to<br><span>DxnnyCraft</span></h1>
-        <p>The complete guide to playing on DxnnyCraft SMP. Find everything you need to know about the economy, ranks, combat, and more.</p>
-        <div class="hero-badges">
-          <span class="badge accent">Java 1.20.6</span>
-          <span class="badge">DxnnyCraft.minehut.gg</span>
-          <span class="badge">Open Beta</span>
-        </div>
-      </div>
+  <h2>🖥️ Server Info</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Info</th><th>Value</th></tr>
+    <tr><td>IP Address</td><td><code>DxnnyCraft.minehut.gg</code></td></tr>
+    <tr><td>Version</td><td><code>Java 1.20.6</code></td></tr>
+    <tr><td>Season</td><td>Season 1</td></tr>
+    <tr><td>Discord</td><td><a href="https://discord.gg/XWyVPMwaE8" style="color:var(--accent)">discord.gg/XWyVPMwaE8</a></td></tr>
+  </table></div>
+</div>
 
-      <div class="cards">
-        <a class="card" href="#" onclick="show('quickstart')">
-          <div class="card-icon">⚡</div>
-          <div class="card-title">Quick Start</div>
-          <div class="card-desc">New to the server? Start here.</div>
-        </a>
-        <a class="card" href="#" onclick="show('economy')">
-          <div class="card-icon">💰</div>
-          <div class="card-title">Economy</div>
-          <div class="card-desc">Earn, spend, and trade money.</div>
-        </a>
-        <a class="card" href="#" onclick="show('ranks')">
-          <div class="card-icon">🏆</div>
-          <div class="card-title">Ranks</div>
-          <div class="card-desc">Rank up from Member to Legend.</div>
-        </a>
-        <a class="card" href="#" onclick="show('alchemy')">
-          <div class="card-icon">⚗️</div>
-          <div class="card-title">Alchemy</div>
-          <div class="card-desc">Grow herbs and trade on the Black Market.</div>
-        </a>
-        <a class="card" href="#" onclick="show('pvp')">
-          <div class="card-icon">⚔️</div>
-          <div class="card-title">PvP Arena</div>
-          <div class="card-desc">Fight players and earn kill rewards.</div>
-        </a>
-        <a class="card" href="#" onclick="show('commands')">
-          <div class="card-icon">📖</div>
-          <div class="card-title">Commands</div>
-          <div class="card-desc">Full command reference.</div>
-        </a>
-      </div>
+<!-- QUICK START -->
+<div class="page" id="page-quickstart">
+  <div class="page-header">
+    <div class="page-tag">Getting Started</div>
+    <div class="page-title">Quick Start</div>
+    <div class="page-desc">Everything you need to do in your first 10 minutes on DxnnyCraft.</div>
+  </div>
+  <h2>Step 1 — Join the Server</h2>
+  <p>Connect to <strong>DxnnyCraft.minehut.gg</strong> in Minecraft Java 1.20.6. You will spawn in the Spawn World.</p>
+  <h2>Step 2 — Get Your Starter Kit</h2>
+  <div class="code"><span class="cmd">/kit starter</span>  <span class="comment"># free gear to get you started</span></div>
+  <h2>Step 3 — Enter the World</h2>
+  <p>Type <strong>/play</strong> to be randomly teleported into the survival world. You'll land between 500 and 5000 blocks from spawn.</p>
+  <div class="code"><span class="cmd">/play</span>  <span class="comment"># random teleport into the main world</span></div>
+  <div class="callout warn"><strong>Warning:</strong> You start with 10 hearts. PvP is active everywhere — stay alert!</div>
+  <h2>Step 4 — Claim Your Land</h2>
+  <p>Get a Golden Shovel and right-click two corners of the area you want to protect.</p>
+  <div class="code"><span class="cmd">/claimlist</span>  <span class="comment"># see your claims</span></div>
+  <h2>Step 5 — Set a Home</h2>
+  <div class="code">
+<span class="cmd">/sethome home</span>   <span class="comment"># save location</span>
+<span class="cmd">/home home</span>      <span class="comment"># teleport back</span>
+  </div>
+  <h2>Step 6 — Return to Spawn</h2>
+  <div class="code"><span class="cmd">/spawn</span>  <span class="comment"># teleport back to spawn (blocked during combat)</span></div>
+  <h2>Step 7 — Claim Daily Rewards</h2>
+  <div class="code"><span class="cmd">/daily</span>  <span class="comment"># free money and items every day</span></div>
+</div>
 
-      <h2>🖥️ Server Info</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Info</th><th>Value</th></tr>
-          <tr><td>IP Address</td><td><code>DxnnyCraft.minehut.gg</code></td></tr>
-          <tr><td>Version</td><td><code>Java 1.20.6</code></td></tr>
-          <tr><td>Bedrock</td><td><code>Port 19132</code> via GeyserMC</td></tr>
-          <tr><td>Status</td><td>Open Beta</td></tr>
-          <tr><td>Discord</td><td>Join via /discord in game</td></tr>
-        </table>
-      </div>
-    </div>
+<!-- RULES -->
+<div class="page" id="page-rules">
+  <div class="page-header">
+    <div class="page-tag">Important</div>
+    <div class="page-title">Server Rules</div>
+    <div class="page-desc">Breaking these rules results in a mute, kick, or ban.</div>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>#</th><th>Rule</th><th>Punishment</th></tr>
+    <tr><td>1</td><td>No griefing or stealing from claimed land</td><td>Ban</td></tr>
+    <tr><td>2</td><td>No hacking, cheating, or exploiting bugs</td><td>Permanent Ban</td></tr>
+    <tr><td>3</td><td>No combat logging (disconnecting during PvP)</td><td>Ban</td></tr>
+    <tr><td>4</td><td>Respect all players — no harassment</td><td>Mute / Ban</td></tr>
+    <tr><td>5</td><td>No racism, hate speech, or slurs</td><td>Permanent Ban</td></tr>
+    <tr><td>6</td><td>No spamming or advertising other servers</td><td>Mute / Kick</td></tr>
+    <tr><td>7</td><td>Listen to staff at all times</td><td>Kick / Ban</td></tr>
+  </table></div>
+  <div class="callout"><strong>Combat Logging:</strong> If you disconnect during PvP you are automatically killed and your killer gets the heart. There is no way around this.</div>
+</div>
 
-    <!-- ── QUICK START ───────────────────────────── -->
-    <div class="page" id="page-quickstart">
-      <div class="page-header">
-        <div class="page-tag">Getting Started</div>
-        <div class="page-title">Quick Start Guide</div>
-        <div class="page-desc">Everything you need to do in your first 10 minutes on DxnnyCraft.</div>
-      </div>
+<!-- HEARTS -->
+<div class="page" id="page-hearts">
+  <div class="page-header">
+    <div class="page-tag">Lifesteal</div>
+    <div class="page-title">Heart System</div>
+    <div class="page-desc">The core mechanic of DxnnyCraft — steal hearts from players you kill.</div>
+  </div>
+  <h2>❤ How It Works</h2>
+  <p>Every player starts with <strong>10 hearts</strong>. When you kill another player you gain 1 heart and they lose 1 heart. Max hearts is capped at <strong>40</strong>.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Event</th><th>Result</th></tr>
+    <tr><td>You kill a player</td><td>+1 heart (you), -1 heart (them)</td></tr>
+    <tr><td>You get killed</td><td>-1 heart (you), +1 heart (killer)</td></tr>
+    <tr><td>You reach 0 hearts</td><td>Eliminated — 1 hour temp ban</td></tr>
+    <tr><td>You return after ban</td><td>Reset to 10 hearts</td></tr>
+  </table></div>
+  <div class="callout warn"><strong>Elimination:</strong> Reaching 0 hearts bans you for 1 hour. When you return your hearts reset to 10.</div>
+  <h2>💊 Heart Commands</h2>
+  <div class="code">
+<span class="cmd">/hearts</span>                   <span class="comment"># check your hearts</span>
+<span class="cmd">/hearts check</span> <span class="arg">&lt;player&gt;</span>   <span class="comment"># check another player's hearts</span>
+<span class="cmd">/hearts gift</span> <span class="arg">&lt;player&gt;</span>    <span class="comment"># give 1 of your hearts to someone</span>
+<span class="cmd">/hearts top</span>               <span class="comment"># top 10 players by hearts</span>
+  </div>
+  <h2>❤ Getting More Hearts</h2>
+  <p>Besides killing players, you can gain hearts from:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Source</th><th>Hearts</th></tr>
+    <tr><td>Kill a player</td><td>+1</td></tr>
+    <tr><td>Rare Crate</td><td>+1 (5% chance)</td></tr>
+    <tr><td>Legendary Crate</td><td>+2 or +3</td></tr>
+    <tr><td>Gift from another player</td><td>+1</td></tr>
+  </table></div>
+</div>
 
-      <h2>Step 1 — Join the Server</h2>
-      <p>Connect to <strong>DxnnyCraft.minehut.gg</strong> in Minecraft Java 1.20.6. Bedrock players use port <strong>19132</strong>.</p>
+<!-- COMBAT -->
+<div class="page" id="page-combat">
+  <div class="page-header">
+    <div class="page-tag">Lifesteal</div>
+    <div class="page-title">Combat System</div>
+    <div class="page-desc">Combat rules and the combat tag system.</div>
+  </div>
+  <h2>⚔ Combat Tag</h2>
+  <p>When you hit a player or get hit, you are tagged in combat for <strong>30 seconds</strong>. Your action bar shows a countdown timer.</p>
+  <div class="callout warn"><strong>Combat Logging:</strong> If you disconnect while tagged you are instantly killed. Your killer gets the heart. Don't log out during a fight!</div>
+  <h2>🚫 Restrictions While Tagged</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Action</th><th>Allowed?</th></tr>
+    <tr><td>/spawn</td><td>❌ Blocked</td></tr>
+    <tr><td>Disconnect</td><td>❌ You get killed</td></tr>
+    <tr><td>Fighting back</td><td>✅ Allowed</td></tr>
+    <tr><td>Running away</td><td>✅ Allowed</td></tr>
+  </table></div>
+  <h2>🛡️ Spawn Protection</h2>
+  <p>PvP is disabled within the spawn area. You cannot attack or be attacked while in spawn.</p>
+  <h2>💀 Kill Streaks</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Streak</th><th>Announcement</th></tr>
+    <tr><td>3 kills</td><td>3 kill streak announced</td></tr>
+    <tr><td>5 kills</td><td>5 kill streak announced</td></tr>
+    <tr><td>10 kills</td><td>UNSTOPPABLE</td></tr>
+    <tr><td>15 kills</td><td>GODLIKE</td></tr>
+    <tr><td>25 kills</td><td>LEGEND</td></tr>
+  </table></div>
+</div>
 
-      <h2>Step 2 — Get Your Starter Kit</h2>
-      <p>The moment you join, type this command to get your free starter gear:</p>
-      <div class="code"><span class="cmd">/kit starter</span></div>
-      <p>This gives you iron armour, tools, food, and torches to get you going.</p>
+<!-- ECONOMY -->
+<div class="page" id="page-economy">
+  <div class="page-header">
+    <div class="page-tag">Economy</div>
+    <div class="page-title">Economy</div>
+    <div class="page-desc">Earn, spend, and trade money on DxnnyCraft.</div>
+  </div>
+  <h2>💵 Earning Money</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Method</th><th>Amount</th></tr>
+    <tr><td>Daily Reward</td><td>$100 – $1,500</td></tr>
+    <tr><td>PvP kill reward</td><td>$50 per kill</td></tr>
+    <tr><td>Sell items (AH / Shops)</td><td>Varies</td></tr>
+    <tr><td>Bounties</td><td>Varies</td></tr>
+    <tr><td>Alchemy Black Market</td><td>$25 – $300</td></tr>
+    <tr><td>Lottery win</td><td>Full pot</td></tr>
+    <tr><td>Crates</td><td>$500 – $25,000</td></tr>
+  </table></div>
+  <h2>💸 Commands</h2>
+  <div class="code">
+<span class="cmd">/balance</span>                  <span class="comment"># your balance</span>
+<span class="cmd">/baltop</span>                   <span class="comment"># richest players</span>
+<span class="cmd">/pay</span> <span class="arg">&lt;player&gt; &lt;amount&gt;</span>  <span class="comment"># send money</span>
+  </div>
+</div>
 
-      <h2>Step 3 — Explore and Find a Spot</h2>
-      <p>Use the random teleport command to get away from spawn and find somewhere to build:</p>
-      <div class="code"><span class="cmd">/rtp</span></div>
-      <div class="callout tip"><strong>Tip:</strong> Travel far from spawn before settling — areas near spawn get explored quickly.</div>
-
-      <h2>Step 4 — Claim Your Land</h2>
-      <p>Get a <strong>Golden Shovel</strong> from your inventory or craft one, then right-click two corners of the area you want to protect:</p>
-      <div class="code">
-<span class="comment"># Right-click corner 1, then right-click corner 2</span>
-<span class="cmd">/claimlist</span>   <span class="comment"># see all your claims</span>
-<span class="cmd">/abandonclaim</span> <span class="comment"># remove the claim you're standing in</span>
-      </div>
-      <div class="callout warn"><strong>Warning:</strong> Unclaimed land can be griefed! Always claim before building.</div>
-
-      <h2>Step 5 — Set Your Home</h2>
-      <div class="code">
-<span class="cmd">/sethome home</span>   <span class="comment"># save your current location</span>
-<span class="cmd">/home home</span>      <span class="comment"># teleport back anytime</span>
-      </div>
-
-      <h2>Step 6 — Claim Daily Rewards</h2>
-      <div class="code"><span class="cmd">/daily</span>   <span class="comment"># claim free money and items every day</span></div>
-
-      <h2>Step 7 — Start Earning Money</h2>
-      <p>Check the Auction House for good deals, set up a chest shop, or sell items to other players.</p>
-      <div class="code">
-<span class="cmd">/ah</span>              <span class="comment"># browse the auction house</span>
-<span class="cmd">/balance</span>         <span class="comment"># check your money</span>
-<span class="cmd">/baltop</span>          <span class="comment"># see the richest players</span>
-      </div>
-    </div>
-
-    <!-- ── RULES ─────────────────────────────────── -->
-    <div class="page" id="page-rules">
-      <div class="page-header">
-        <div class="page-tag">Important</div>
-        <div class="page-title">Server Rules</div>
-        <div class="page-desc">Breaking these rules will result in a mute, kick, or ban.</div>
-      </div>
-
-      <h2>📋 Rules</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>#</th><th>Rule</th><th>Punishment</th></tr>
-          <tr><td>1</td><td>No griefing or stealing from other players</td><td>Ban</td></tr>
-          <tr><td>2</td><td>No hacking, cheating, or exploiting bugs</td><td>Permanent Ban</td></tr>
-          <tr><td>3</td><td>Respect all players — no harassment</td><td>Mute / Ban</td></tr>
-          <tr><td>4</td><td>No racism, hate speech, or slurs</td><td>Permanent Ban</td></tr>
-          <tr><td>5</td><td>No spamming or advertising other servers</td><td>Mute / Kick</td></tr>
-          <tr><td>6</td><td>No AFK farming or exploiting mechanics</td><td>Kick / Ban</td></tr>
-          <tr><td>7</td><td>Listen to staff decisions</td><td>Kick / Ban</td></tr>
-        </table>
-      </div>
-      <div class="callout"><strong>Report issues:</strong> Use the bug-reports channel in our Discord or type /helpop in game.</div>
-    </div>
-
-    <!-- ── ECONOMY ───────────────────────────────── -->
-    <div class="page" id="page-economy">
-      <div class="page-header">
-        <div class="page-tag">Economy</div>
-        <div class="page-title">Economy System</div>
-        <div class="page-desc">DxnnyCraft has a full player-driven economy. Earn money, spend it, and trade with others.</div>
-      </div>
-
-      <h2>💵 Earning Money</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Method</th><th>How</th><th>Amount</th></tr>
-          <tr><td>Daily Reward</td><td><code>/daily</code></td><td>$100 – $1,500</td></tr>
-          <tr><td>Selling items</td><td>Auction House or Chest Shop</td><td>Varies</td></tr>
-          <tr><td>PvP kills</td><td>Kill players in arena</td><td>$50 per kill</td></tr>
-          <tr><td>Bounties</td><td>Kill players with bounties</td><td>Varies</td></tr>
-          <tr><td>Alchemy</td><td>Sell herbs on Black Market</td><td>$25 – $300 each</td></tr>
-          <tr><td>Lottery win</td><td><code>/lottery buy</code></td><td>Full pot</td></tr>
-        </table>
-      </div>
-
-      <h2>💸 Money Commands</h2>
-      <div class="code">
-<span class="cmd">/balance</span>                  <span class="comment"># check your balance</span>
-<span class="cmd">/baltop</span>                   <span class="comment"># richest players leaderboard</span>
-<span class="cmd">/pay</span> <span class="arg">&lt;player&gt; &lt;amount&gt;</span>  <span class="comment"># send money to a player</span>
-      </div>
-
-      <h2>🏦 Starting Balance</h2>
-      <p>New players start with <strong>$500</strong>. Use it wisely to get your first shop or supplies.</p>
-    </div>
-
-    <!-- ── AUCTION HOUSE ──────────────────────────── -->
-    <div class="page" id="page-auction">
-      <div class="page-header">
-        <div class="page-tag">Economy</div>
-        <div class="page-title">Auction House</div>
-        <div class="page-desc">Buy and sell anything with other players through the global auction house.</div>
-      </div>
-
-      <h2>📦 Listing Items</h2>
-      <p>Hold the item you want to sell in your hand, then:</p>
-      <div class="code">
-<span class="cmd">/ah sell</span> <span class="arg">&lt;price&gt;</span>   <span class="comment"># list item in hand for sale</span>
+<!-- AUCTION HOUSE -->
+<div class="page" id="page-auction">
+  <div class="page-header">
+    <div class="page-tag">Economy</div>
+    <div class="page-title">Auction House</div>
+    <div class="page-desc">Buy and sell items with other players.</div>
+  </div>
+  <h2>📦 Listing Items</h2>
+  <p>Hold the item in your hand then:</p>
+  <div class="code">
+<span class="cmd">/ah sell</span> <span class="arg">&lt;price&gt;</span>   <span class="comment"># list item for sale</span>
 <span class="cmd">/ah mine</span>          <span class="comment"># view your listings</span>
-<span class="cmd">/ah cancel</span> <span class="arg">&lt;id&gt;</span>  <span class="comment"># cancel a listing (item returned)</span>
-      </div>
+<span class="cmd">/ah cancel</span> <span class="arg">&lt;id&gt;</span>  <span class="comment"># cancel a listing</span>
+  </div>
+  <h2>🛒 Buying</h2>
+  <div class="code">
+<span class="cmd">/ah</span>                    <span class="comment"># open auction house GUI</span>
+<span class="cmd">/ah search</span> <span class="arg">&lt;name&gt;</span>  <span class="comment"># search by item name</span>
+  </div>
+  <div class="callout">Listings expire after <strong>48 hours</strong>. Max <strong>10 listings</strong> per player.</div>
+</div>
 
-      <h2>🛒 Buying Items</h2>
-      <div class="code">
-<span class="cmd">/ah</span>              <span class="comment"># open auction house GUI</span>
-<span class="cmd">/ah search</span> <span class="arg">&lt;name&gt;</span> <span class="comment"># search by item name</span>
-      </div>
-      <p>Click any item in the GUI to open a confirmation screen. Left-click to buy, right-click your own listings to cancel.</p>
+<!-- SHOPS -->
+<div class="page" id="page-shops">
+  <div class="page-header">
+    <div class="page-tag">Economy</div>
+    <div class="page-title">Chest Shops</div>
+    <div class="page-desc">Set up your own permanent player shop.</div>
+  </div>
+  <h2>🏗️ Creating a Shop</h2>
+  <p>Place a chest, then put a sign on it:</p>
+  <div class="code">
+<span class="comment">Line 1: (leave blank)</span>
+<span class="comment">Line 2:</span> <span class="arg">1</span>
+<span class="comment">Line 3:</span> <span class="arg">B 50 : S 30</span>
+<span class="comment">Line 4:</span> <span class="arg">DIAMOND</span>
+  </div>
+  <div class="callout tip"><strong>Tip:</strong> Set up your shop near spawn for more customers!</div>
+</div>
 
-      <h2>⚙️ Rules</h2>
-      <div class="callout">Listings expire after <strong>48 hours</strong> and are returned to you. Max <strong>10 listings</strong> per player at once.</div>
+<!-- LOTTERY -->
+<div class="page" id="page-lottery">
+  <div class="page-header">
+    <div class="page-tag">Economy</div>
+    <div class="page-title">Lottery</div>
+    <div class="page-desc">Buy tickets for a chance to win the entire pot. Draws every 24 hours.</div>
+  </div>
+  <h2>🎟️ How It Works</h2>
+  <p>Every ticket costs <strong>$50</strong>. All money goes into the pot. One random winner takes everything. More tickets = higher chance.</p>
+  <div class="code">
+<span class="cmd">/lottery</span>               <span class="comment"># open GUI</span>
+<span class="cmd">/lottery buy</span> <span class="arg">&lt;amount&gt;</span> <span class="comment"># buy tickets</span>
+  </div>
+</div>
+
+<!-- CRATES -->
+<div class="page" id="page-crates">
+  <div class="page-header">
+    <div class="page-tag">Economy</div>
+    <div class="page-title">Crates</div>
+    <div class="page-desc">Open crates at spawn using keys earned from voting, the store, or admin events.</div>
+  </div>
+
+  <h2>📦 Crate Tiers</h2>
+  <div class="crate-grid">
+    <div class="crate-card common">
+      <div class="crate-title common">⬜ Common</div>
+      <div class="crate-item">$500 – $1,000</div>
+      <div class="crate-item">Iron Sword / Chestplate</div>
+      <div class="crate-item">Golden Apples x3</div>
+      <div class="crate-item">XP Bottles x16</div>
+      <div class="crate-item">Cooked Beef x32</div>
+      <div class="crate-item">3% Rare Key chance</div>
     </div>
-
-    <!-- ── SHOPS ─────────────────────────────────── -->
-    <div class="page" id="page-shops">
-      <div class="page-header">
-        <div class="page-tag">Economy</div>
-        <div class="page-title">Chest Shops</div>
-        <div class="page-desc">Set up your own permanent shop using ChestShop signs.</div>
-      </div>
-
-      <h2>🏗️ Creating a Shop</h2>
-      <p>Place a chest, then put a sign on it with this exact format:</p>
-      <div class="code">
-<span class="comment">Line 1: (leave blank — auto-fills your name)</span>
-<span class="comment">Line 2:</span> <span class="arg">1</span>              <span class="comment"># quantity per transaction</span>
-<span class="comment">Line 3:</span> <span class="arg">B 50 : S 30</span>   <span class="comment"># buy for $50, sell for $30</span>
-<span class="comment">Line 4:</span> <span class="arg">DIAMOND</span>        <span class="comment"># item name</span>
-      </div>
-
-      <h2>🛡️ Admin Shops</h2>
-      <p>Admin shops have infinite stock. Look for the admin shop stalls at spawn market.</p>
-      <div class="code">
-<span class="comment">Line 1:</span> <span class="arg">[Admin]</span>
-<span class="comment">Line 2:</span> <span class="arg">64</span>
-<span class="comment">Line 3:</span> <span class="arg">B 5 : S 3</span>
-<span class="comment">Line 4:</span> <span class="arg">COBBLESTONE</span>
-      </div>
-      <div class="callout tip"><strong>Tip:</strong> Rent a market stall at spawn to get more customers for your shop.</div>
+    <div class="crate-card rare">
+      <div class="crate-title rare">🔵 Rare</div>
+      <div class="crate-item">$2,000 – $5,000</div>
+      <div class="crate-item">Diamond Sword / Armour</div>
+      <div class="crate-item">Diamonds x16</div>
+      <div class="crate-item">Golden Apples x8</div>
+      <div class="crate-item">+1 Heart (5% chance)</div>
+      <div class="crate-item">3% Rare Key chance</div>
     </div>
-
-    <!-- ── LOTTERY ───────────────────────────────── -->
-    <div class="page" id="page-lottery">
-      <div class="page-header">
-        <div class="page-tag">Economy</div>
-        <div class="page-title">Lottery</div>
-        <div class="page-desc">Buy tickets for a chance to win the entire pot. Draws every 24 hours.</div>
-      </div>
-
-      <h2>🎟️ How It Works</h2>
-      <p>Every ticket costs <strong>$50</strong>. All ticket money goes into the pot. One random winner takes everything. More tickets = higher chance of winning.</p>
-
-      <h2>🎰 Commands</h2>
-      <div class="code">
-<span class="cmd">/lottery</span>              <span class="comment"># open GUI — buy 1, 5, or 10 tickets</span>
-<span class="cmd">/lottery buy</span> <span class="arg">&lt;amount&gt;</span> <span class="comment"># buy tickets directly</span>
-<span class="cmd">/lottery info</span>         <span class="comment"># check pot size and your tickets</span>
-      </div>
-
-      <div class="callout warn"><strong>Note:</strong> If you win while offline, your winnings are automatically given when you next log in.</div>
+    <div class="crate-card legendary">
+      <div class="crate-title legendary">🟡 Legendary</div>
+      <div class="crate-item">$10,000 – $25,000</div>
+      <div class="crate-item">Warlord's Set (5%)</div>
+      <div class="crate-item">Netherite Sword</div>
+      <div class="crate-item">Enchanted Golden Apples x4</div>
+      <div class="crate-item">+2 or +3 Hearts</div>
+      <div class="crate-item">1% Legendary Key chance</div>
     </div>
+  </div>
 
-    <!-- ── RANKS ─────────────────────────────────── -->
-    <div class="page" id="page-ranks">
-      <div class="page-header">
-        <div class="page-tag">Progression</div>
-        <div class="page-title">Rank System</div>
-        <div class="page-desc">Spend money and playtime to climb the rank ladder from Member to Legend.</div>
-      </div>
+  <h2>🗝️ Getting Keys</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Method</th><th>Key Type</th></tr>
+    <tr><td>Vote for the server</td><td>Common Key</td></tr>
+    <tr><td>Buy from Tebex store</td><td>Any key</td></tr>
+    <tr><td>Admin events / giveaways</td><td>Any key</td></tr>
+    <tr><td>Win from another crate</td><td>Varies</td></tr>
+  </table></div>
 
-      <h2>🏆 Rank Ladder</h2>
-      <div class="ranks">
-        <div class="rank-row">
-          <div class="rank-name" style="color:#aaa">Member</div>
-          <div class="rank-cost">Starting rank — free</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-name" style="color:#4ade80">VIP</div>
-          <div class="rank-cost">$5,000 · 5 hours playtime</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-name" style="color:#60a5fa">VIP+</div>
-          <div class="rank-cost">$15,000 · 10 hours playtime</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-name" style="color:#fbbf24">MVP</div>
-          <div class="rank-cost">$40,000 · 20 hours playtime</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-name" style="color:#f87171">Elite</div>
-          <div class="rank-cost">$100,000 · 40 hours playtime</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-name" style="color:#e879f9">Legend</div>
-          <div class="rank-cost">$250,000 · 80 hours playtime</div>
-        </div>
-      </div>
+  <h2>🏛️ Using Crates</h2>
+  <p>Physical crates are located at spawn. Hold your key and right-click the crate to open it.</p>
+  <div class="callout tip"><strong>Tip:</strong> Vote daily at <code>/vote</code> to get free Common Keys every day!</div>
 
-      <h2>⬆️ Ranking Up</h2>
-      <div class="code">
+  <h2>⚔ Warlord's Set</h2>
+  <p>The rarest reward in the Legendary Crate — a full Netherite armour set with Sentry/Redstone trim, Protection V and Unbreaking III. Once you've won it you can't win it again, but you'll receive $50,000 as an alternative.</p>
+</div>
+
+<!-- RANKS -->
+<div class="page" id="page-ranks">
+  <div class="page-header">
+    <div class="page-tag">Progression</div>
+    <div class="page-title">Rank System</div>
+    <div class="page-desc">Earn ranks by spending money and playtime. All earnable in-game for free.</div>
+  </div>
+  <h2>🏆 Rank Ladder</h2>
+  <div class="ranks">
+    <div class="rank-row"><div class="rank-name" style="color:#aaa">Member</div><div class="rank-cost">Starting rank — free</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#4ade80">VIP</div><div class="rank-cost">$5,000 · 5 hours playtime</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#60a5fa">VIP+</div><div class="rank-cost">$15,000 · 10 hours playtime</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#fbbf24">MVP</div><div class="rank-cost">$40,000 · 20 hours playtime</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#f87171">Elite</div><div class="rank-cost">$100,000 · 40 hours playtime</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#e879f9">Legend</div><div class="rank-cost">$250,000 · 80 hours playtime</div></div>
+  </div>
+  <div class="code">
 <span class="cmd">/rankup</span>  <span class="comment"># rank up if you meet requirements</span>
-<span class="cmd">/ranks</span>   <span class="comment"># view rank ladder GUI with your progress</span>
-      </div>
-      <div class="callout tip"><strong>Tip:</strong> Daily rewards are the fastest way to earn money for rankups. Keep your streak going!</div>
-    </div>
+<span class="cmd">/ranks</span>   <span class="comment"># view rank ladder GUI</span>
+  </div>
+</div>
 
-    <!-- ── DAILY ─────────────────────────────────── -->
-    <div class="page" id="page-daily">
-      <div class="page-header">
-        <div class="page-tag">Progression</div>
-        <div class="page-title">Daily Rewards</div>
-        <div class="page-desc">Log in every day to claim increasing rewards and keep your streak alive.</div>
-      </div>
+<!-- DONOR RANKS -->
+<div class="page" id="page-donor">
+  <div class="page-header">
+    <div class="page-tag">Progression</div>
+    <div class="page-title">Donor Ranks</div>
+    <div class="page-desc">Support the server and get exclusive cosmetic perks. Available on the Tebex store.</div>
+  </div>
+  <div class="callout tip"><strong>EULA Compliant:</strong> All donor perks are cosmetic only. No gameplay advantages.</div>
+  <h2>💎 Donor Tiers</h2>
+  <div class="ranks">
+    <div class="rank-row"><div class="rank-name" style="color:#4ade80">Donor</div><div class="rank-cost">$4.99 · Custom prefix · /nick · Chat color · /fly</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#60a5fa">Supporter</div><div class="rank-cost">$9.99 · Above + /hat · Extra homes</div></div>
+    <div class="rank-row"><div class="rank-name" style="color:#e879f9">Patron</div><div class="rank-cost">$19.99 · Above + /enderchest · More homes</div></div>
+  </div>
+  <p>Donor ranks stack with your earned rank. They never expire and carry over between seasons.</p>
+</div>
 
-      <h2>🎁 Reward Schedule</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Day</th><th>Money</th><th>Bonus Item</th></tr>
-          <tr><td>Day 1</td><td>$100</td><td>—</td></tr>
-          <tr><td>Day 2</td><td>$200</td><td>—</td></tr>
-          <tr><td>Day 3</td><td>$350</td><td>Golden Apple</td></tr>
-          <tr><td>Day 4</td><td>$500</td><td>—</td></tr>
-          <tr><td>Day 5</td><td>$750</td><td>2x Diamond</td></tr>
-          <tr><td>Day 6</td><td>$1,000</td><td>—</td></tr>
-          <tr><td>Day 7+</td><td>$1,500</td><td>Netherite Ingot</td></tr>
-        </table>
-      </div>
+<!-- DAILY -->
+<div class="page" id="page-daily">
+  <div class="page-header">
+    <div class="page-tag">Progression</div>
+    <div class="page-title">Daily Rewards</div>
+    <div class="page-desc">Log in every day and keep your streak alive for bigger rewards.</div>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>Day</th><th>Money</th><th>Bonus</th></tr>
+    <tr><td>Day 1</td><td>$100</td><td>—</td></tr>
+    <tr><td>Day 2</td><td>$200</td><td>—</td></tr>
+    <tr><td>Day 3</td><td>$350</td><td>Golden Apple</td></tr>
+    <tr><td>Day 4</td><td>$500</td><td>—</td></tr>
+    <tr><td>Day 5</td><td>$750</td><td>2x Diamond</td></tr>
+    <tr><td>Day 6</td><td>$1,000</td><td>—</td></tr>
+    <tr><td>Day 7+</td><td>$1,500</td><td>Netherite Ingot</td></tr>
+  </table></div>
+  <div class="callout warn"><strong>Warning:</strong> Missing a day resets your streak to Day 1!</div>
+  <div class="code"><span class="cmd">/daily</span>  <span class="comment"># claim your reward</span></div>
+</div>
 
-      <div class="callout warn"><strong>Warning:</strong> Missing a day resets your streak back to Day 1!</div>
-
-      <h2>📅 Commands</h2>
-      <div class="code">
-<span class="cmd">/daily</span>         <span class="comment"># open reward GUI and claim</span>
-<span class="cmd">/daily claim</span>   <span class="comment"># claim directly without opening GUI</span>
-      </div>
-      <p>You'll receive a notification in chat when you join if you have an unclaimed reward.</p>
-    </div>
-
-    <!-- ── QUESTS ────────────────────────────────── -->
-    <div class="page" id="page-quests">
-      <div class="page-header">
-        <div class="page-tag">Progression</div>
-        <div class="page-title">Quests</div>
-        <div class="page-desc">Complete quests to earn money and XP rewards.</div>
-      </div>
-
-      <h2>📜 Commands</h2>
-      <div class="code">
-<span class="cmd">/quests</span>        <span class="comment"># view available quests</span>
-<span class="cmd">/quest list</span>    <span class="comment"># list all quests</span>
-<span class="cmd">/quest track</span> <span class="arg">&lt;name&gt;</span> <span class="comment"># track a quest</span>
-      </div>
-
-      <h2>🗂️ Quest Categories</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Category</th><th>Examples</th></tr>
-          <tr><td>Alchemy</td><td>Grow Mystic Herbs, Refine Blue Crystals</td></tr>
-          <tr><td>Combat</td><td>Get kills in the arena, win duels</td></tr>
-          <tr><td>Gathering</td><td>Mine ores, chop trees</td></tr>
-          <tr><td>Trading</td><td>Use the auction house, set up a shop</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── PVP ───────────────────────────────────── -->
-    <div class="page" id="page-pvp">
-      <div class="page-header">
-        <div class="page-tag">Combat</div>
-        <div class="page-title">PvP Arena</div>
-        <div class="page-desc">Fight other players in the FFA arena. Earn $50 per kill and climb the leaderboard.</div>
-      </div>
-
-      <h2>⚔️ Joining the Arena</h2>
-      <div class="code">
-<span class="cmd">/pvp join</span>   <span class="comment"># enter the PvP arena</span>
-<span class="cmd">/pvp leave</span>  <span class="comment"># leave the arena</span>
-<span class="cmd">/warp pvp</span>   <span class="comment"># teleport to the arena entrance</span>
-      </div>
-
-      <div class="callout"><strong>Keep Inventory:</strong> You are given an iron kit on entry. Your real inventory is saved and returned when you leave.</div>
-
-      <h2>📊 Stats and Leaderboard</h2>
-      <div class="code">
-<span class="cmd">/pvp stats</span>             <span class="comment"># view your own stats</span>
-<span class="cmd">/pvp stats</span> <span class="arg">&lt;player&gt;</span>  <span class="comment"># view another player's stats</span>
-<span class="cmd">/pvptop</span>                <span class="comment"># open leaderboard GUI</span>
-      </div>
-
-      <h2>🔥 Kill Streaks</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Streak</th><th>Announcement</th></tr>
-          <tr><td>3 kills</td><td>3 kill streak announced to server</td></tr>
-          <tr><td>5 kills</td><td>5 kill streak announced</td></tr>
-          <tr><td>10 kills</td><td>UNSTOPPABLE announced</td></tr>
-          <tr><td>15 kills</td><td>GODLIKE announced</td></tr>
-          <tr><td>25 kills</td><td>LEGEND announced</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── DUELS ─────────────────────────────────── -->
-    <div class="page" id="page-duels">
-      <div class="page-header">
-        <div class="page-tag">Combat</div>
-        <div class="page-title">Duels</div>
-        <div class="page-desc">Challenge any player to a 1v1 duel with diamond gear.</div>
-      </div>
-
-      <h2>🤺 How to Duel</h2>
-      <div class="code">
-<span class="cmd">/duel</span> <span class="arg">&lt;player&gt;</span>   <span class="comment"># send a duel request</span>
-<span class="cmd">/duel accept</span>    <span class="comment"># accept a duel request</span>
-<span class="cmd">/duel deny</span>      <span class="comment"># decline a request</span>
-<span class="cmd">/duel cancel</span>    <span class="comment"># cancel your sent request</span>
-      </div>
-
-      <h2>⚙️ How It Works</h2>
-      <p>Once accepted, a <strong>5 second countdown</strong> begins. Both players are teleported to the arena and given diamond gear. Your real inventory is saved and returned after. Winner is announced to the whole server.</p>
-
-      <div class="callout tip"><strong>Tip:</strong> Duel requests expire after 30 seconds if not accepted.</div>
-    </div>
-
-    <!-- ── BOUNTY ────────────────────────────────── -->
-    <div class="page" id="page-bounty">
-      <div class="page-header">
-        <div class="page-tag">Combat</div>
-        <div class="page-title">Bounty System</div>
-        <div class="page-desc">Put a price on a player's head. Kill them to collect the reward.</div>
-      </div>
-
-      <h2>☠️ Placing a Bounty</h2>
-      <div class="code">
+<!-- BOUNTY -->
+<div class="page" id="page-bounty">
+  <div class="page-header">
+    <div class="page-tag">Progression</div>
+    <div class="page-title">Bounty System</div>
+    <div class="page-desc">Put a price on a player's head. Kill them to collect.</div>
+  </div>
+  <div class="code">
+<span class="cmd">/bounty</span>                           <span class="comment"># view bounty board</span>
 <span class="cmd">/bounty set</span> <span class="arg">&lt;player&gt; &lt;amount&gt;</span>  <span class="comment"># place a bounty</span>
-<span class="cmd">/bounty</span>                       <span class="comment"># view bounty board</span>
-<span class="cmd">/bounty info</span> <span class="arg">&lt;player&gt;</span>        <span class="comment"># check a player's bounty</span>
-<span class="cmd">/bounty remove</span> <span class="arg">&lt;player&gt;</span>      <span class="comment"># reclaim your bounty contribution</span>
-      </div>
+<span class="cmd">/bounty remove</span> <span class="arg">&lt;player&gt;</span>        <span class="comment"># reclaim your contribution</span>
+  </div>
+  <p>Multiple players can stack bounties on one target. Kill them to collect the full amount automatically.</p>
+</div>
 
-      <div class="callout warn"><strong>Minimum bounty:</strong> $100. Multiple players can stack bounties on the same target.</div>
+<!-- ALCHEMY -->
+<div class="page" id="page-alchemy">
+  <div class="page-header">
+    <div class="page-tag">Features</div>
+    <div class="page-title">Alchemy</div>
+    <div class="page-desc">Grow rare herbs, craft concoctions, and trade on the Black Market.</div>
+  </div>
+  <h2>🌿 Items</h2>
+  <div class="items">
+    <div class="item-card"><span class="item-emoji">🌱</span><div class="item-name">Mystic Seed</div><div class="item-value">Plant on farmland</div></div>
+    <div class="item-card"><span class="item-emoji">🌿</span><div class="item-name">Mystic Herb</div><div class="item-value">$25 each</div></div>
+    <div class="item-card"><span class="item-emoji">📜</span><div class="item-name">Herb Roll</div><div class="item-value">$60 each</div></div>
+    <div class="item-card"><span class="item-emoji">🍃</span><div class="item-name">Exotic Leaf</div><div class="item-value">$10 each</div></div>
+    <div class="item-card"><span class="item-emoji">❄️</span><div class="item-name">White Powder</div><div class="item-value">$150 each</div></div>
+    <div class="item-card"><span class="item-emoji">💎</span><div class="item-name">Strange Crystal</div><div class="item-value">$15 each</div></div>
+    <div class="item-card"><span class="item-emoji">🔷</span><div class="item-name">Blue Crystal</div><div class="item-value">$300 each</div></div>
+    <div class="item-card"><span class="item-emoji">🍄</span><div class="item-name">Glowcap</div><div class="item-value">$20 each</div></div>
+    <div class="item-card"><span class="item-emoji">🧪</span><div class="item-name">Glowcap Brew</div><div class="item-value">$200 each</div></div>
+  </div>
+  <h2>⚗️ Crafting</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Command</th><th>Ingredients</th><th>Result</th></tr>
+    <tr><td><code>/alch roll</code></td><td>3 Mystic Herb + 1 Paper</td><td>Herb Roll</td></tr>
+    <tr><td><code>/alch process</code></td><td>8 Exotic Leaves + Blaze Powder</td><td>White Powder</td></tr>
+    <tr><td><code>/alch refine</code></td><td>5 Strange Crystals + Nether Wart</td><td>Blue Crystal</td></tr>
+    <tr><td><code>/alch brew</code></td><td>3 Glowcaps + Water Bottle</td><td>Glowcap Brew</td></tr>
+  </table></div>
+  <div class="code">
+<span class="cmd">/blackmarket</span>  <span class="comment"># open the Black Market</span>
+<span class="cmd">/alchtrade</span> <span class="arg">&lt;player&gt;</span>  <span class="comment"># trade directly</span>
+  </div>
+</div>
 
-      <h2>💰 Collecting</h2>
-      <p>Simply kill a player who has a bounty on them. The full bounty amount is automatically added to your balance and announced to the server.</p>
-    </div>
+<!-- CLAIMS -->
+<div class="page" id="page-claims">
+  <div class="page-header">
+    <div class="page-tag">Features</div>
+    <div class="page-title">Land Claims</div>
+    <div class="page-desc">Protect your builds using GriefPrevention.</div>
+  </div>
+  <p>Get a <strong>Golden Shovel</strong> and right-click two corners of the area to protect.</p>
+  <div class="code">
+<span class="cmd">/claimlist</span>             <span class="comment"># view your claims</span>
+<span class="cmd">/abandonclaim</span>          <span class="comment"># remove claim you're standing in</span>
+<span class="cmd">/trust</span> <span class="arg">&lt;player&gt;</span>        <span class="comment"># let someone build in your claim</span>
+<span class="cmd">/untrust</span> <span class="arg">&lt;player&gt;</span>      <span class="comment"># remove their access</span>
+  </div>
+  <div class="table-wrap"><table>
+    <tr><th>How</th><th>Blocks</th></tr>
+    <tr><td>Starting blocks</td><td>500</td></tr>
+    <tr><td>Per hour played</td><td>+100</td></tr>
+  </table></div>
+</div>
 
-    <!-- ── ALCHEMY ───────────────────────────────── -->
-    <div class="page" id="page-alchemy">
-      <div class="page-header">
-        <div class="page-tag">Features</div>
-        <div class="page-title">Alchemy System</div>
-        <div class="page-desc">Grow rare herbs, craft powerful concoctions, and trade on the underground Black Market.</div>
-      </div>
-
-      <h2>🌿 Items</h2>
-      <div class="items">
-        <div class="item-card">
-          <span class="item-emoji">🌱</span>
-          <div class="item-name">Mystic Seed</div>
-          <div class="item-value">Plant on farmland</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">🌿</span>
-          <div class="item-name">Mystic Herb</div>
-          <div class="item-value">$25 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">📜</span>
-          <div class="item-name">Herb Roll</div>
-          <div class="item-value">$60 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">🍃</span>
-          <div class="item-name">Exotic Leaf</div>
-          <div class="item-value">$10 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">❄️</span>
-          <div class="item-name">White Powder</div>
-          <div class="item-value">$150 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">💎</span>
-          <div class="item-name">Strange Crystal</div>
-          <div class="item-value">$15 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">🔷</span>
-          <div class="item-name">Blue Crystal</div>
-          <div class="item-value">$300 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">🍄</span>
-          <div class="item-name">Glowcap</div>
-          <div class="item-value">$20 each</div>
-        </div>
-        <div class="item-card">
-          <span class="item-emoji">🧪</span>
-          <div class="item-name">Glowcap Brew</div>
-          <div class="item-value">$200 each</div>
-        </div>
-      </div>
-
-      <h2>🌱 Growing</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Herb</th><th>Grow On</th><th>Light</th><th>Time</th></tr>
-          <tr><td>Mystic Herb</td><td>Farmland</td><td>8+ (bright)</td><td>10 minutes</td></tr>
-          <tr><td>Exotic Leaf</td><td>Farmland</td><td>10+ (very bright)</td><td>12 minutes</td></tr>
-          <tr><td>Glowcap</td><td>Mycelium / Podzol</td><td>7 or below (dark)</td><td>8 minutes</td></tr>
-        </table>
-      </div>
-      <p>Hold the seed/item and <strong>right-click</strong> the correct block to plant. Break the crop to harvest when ready.</p>
-
-      <h2>⚗️ Crafting Recipes</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Command</th><th>Ingredients</th><th>Result</th></tr>
-          <tr><td><code>/alch roll</code></td><td>3 Mystic Herb + 1 Paper</td><td>Herb Roll</td></tr>
-          <tr><td><code>/alch process</code></td><td>8 Exotic Leaves + 1 Blaze Powder</td><td>White Powder</td></tr>
-          <tr><td><code>/alch refine</code></td><td>5 Strange Crystals + 2 Nether Wart + Brewing Stand nearby</td><td>Blue Crystal (30s)</td></tr>
-          <tr><td><code>/alch brew</code></td><td>3 Glowcaps + 1 Water Bottle</td><td>Glowcap Brew</td></tr>
-        </table>
-      </div>
-
-      <h2>💊 Using Herbs</h2>
-      <p>Hold any processed herb and <strong>Sneak + Right-click</strong> to consume it for potion effects.</p>
-
-      <h2>🖤 Black Market</h2>
-      <div class="code">
-<span class="cmd">/blackmarket</span>                              <span class="comment"># browse listings</span>
-<span class="cmd">/blackmarket sell</span> <span class="arg">&lt;herb&gt; &lt;amount&gt; &lt;price&gt;</span> <span class="comment"># list herbs for sale</span>
-<span class="cmd">/alchtrade</span> <span class="arg">&lt;player&gt;</span>                    <span class="comment"># trade directly with a player</span>
-      </div>
-    </div>
-
-    <!-- ── CLAIMS ────────────────────────────────── -->
-    <div class="page" id="page-claims">
-      <div class="page-header">
-        <div class="page-tag">Features</div>
-        <div class="page-title">Land Claims</div>
-        <div class="page-desc">Protect your builds from griefing using GriefPrevention.</div>
-      </div>
-
-      <h2>🛡️ Creating a Claim</h2>
-      <p>Get a <strong>Golden Shovel</strong> (craft or find one), then:</p>
-      <p>1. Right-click one corner of your area<br>2. Walk to the opposite corner<br>3. Right-click again</p>
-      <p>The claim is created automatically!</p>
-
-      <h2>📐 Claim Commands</h2>
-      <div class="code">
-<span class="cmd">/claimlist</span>              <span class="comment"># view all your claims and blocks</span>
-<span class="cmd">/abandonclaim</span>           <span class="comment"># remove the claim you're standing in</span>
-<span class="cmd">/trust</span> <span class="arg">&lt;player&gt;</span>         <span class="comment"># let a player build in your claim</span>
-<span class="cmd">/untrust</span> <span class="arg">&lt;player&gt;</span>       <span class="comment"># remove their access</span>
-<span class="cmd">/accesstrust</span> <span class="arg">&lt;player&gt;</span>   <span class="comment"># let them use doors/buttons only</span>
-      </div>
-
-      <h2>📦 Claim Blocks</h2>
-      <div class="table-wrap">
-        <table>
-          <tr><th>How</th><th>Amount</th></tr>
-          <tr><td>Starting blocks</td><td>500</td></tr>
-          <tr><td>Per hour played</td><td>+100</td></tr>
-          <tr><td>Maximum</td><td>80,000</td></tr>
-        </table>
-      </div>
-      <div class="callout tip"><strong>Tip:</strong> The longer you play the more land you can protect. Keep playing to earn more claim blocks!</div>
-    </div>
-
-    <!-- ── COMMANDS ──────────────────────────────── -->
-    <div class="page" id="page-commands">
-      <div class="page-header">
-        <div class="page-tag">Reference</div>
-        <div class="page-title">Command Reference</div>
-        <div class="page-desc">Every player command available on DxnnyCraft.</div>
-      </div>
-
-      <h2>🏠 General</h2>
-      <div class="code">
-<span class="cmd">/spawn</span>                  <span class="comment"># teleport to spawn</span>
-<span class="cmd">/rtp</span>                    <span class="comment"># random teleport</span>
-<span class="cmd">/sethome</span> <span class="arg">&lt;name&gt;</span>         <span class="comment"># save a home location</span>
+<!-- COMMANDS -->
+<div class="page" id="page-commands">
+  <div class="page-header">
+    <div class="page-tag">Reference</div>
+    <div class="page-title">Commands</div>
+    <div class="page-desc">Every player command on DxnnyCraft.</div>
+  </div>
+  <h2>🌍 General</h2>
+  <div class="code">
+<span class="cmd">/play</span>                   <span class="comment"># enter the main world (random teleport)</span>
+<span class="cmd">/spawn</span>                  <span class="comment"># return to spawn (blocked in combat)</span>
+<span class="cmd">/rtp</span>                    <span class="comment"># random teleport in main world</span>
+<span class="cmd">/sethome</span> <span class="arg">&lt;name&gt;</span>         <span class="comment"># save a home</span>
 <span class="cmd">/home</span> <span class="arg">&lt;name&gt;</span>             <span class="comment"># go to a home</span>
-<span class="cmd">/delhome</span> <span class="arg">&lt;name&gt;</span>          <span class="comment"># delete a home</span>
-<span class="cmd">/tpa</span> <span class="arg">&lt;player&gt;</span>            <span class="comment"># request to teleport to player</span>
-<span class="cmd">/tpahere</span> <span class="arg">&lt;player&gt;</span>        <span class="comment"># request player teleports to you</span>
-<span class="cmd">/tpaccept</span>               <span class="comment"># accept a teleport request</span>
-<span class="cmd">/tpdeny</span>                 <span class="comment"># deny a teleport request</span>
-<span class="cmd">/warp</span> <span class="arg">&lt;name&gt;</span>             <span class="comment"># teleport to a warp</span>
-<span class="cmd">/warp list</span>              <span class="comment"># list all warps</span>
+<span class="cmd">/tpa</span> <span class="arg">&lt;player&gt;</span>            <span class="comment"># teleport request</span>
+<span class="cmd">/warp list</span>              <span class="comment"># view all warps</span>
 <span class="cmd">/kit</span> <span class="arg">&lt;name&gt;</span>              <span class="comment"># claim a kit</span>
-      </div>
-
-      <h2>💰 Economy</h2>
-      <div class="code">
-<span class="cmd">/balance</span>                <span class="comment"># check your balance</span>
+  </div>
+  <h2>❤ Lifesteal</h2>
+  <div class="code">
+<span class="cmd">/hearts</span>                         <span class="comment"># your hearts</span>
+<span class="cmd">/hearts check</span> <span class="arg">&lt;player&gt;</span>         <span class="comment"># check someone's hearts</span>
+<span class="cmd">/hearts gift</span> <span class="arg">&lt;player&gt;</span>          <span class="comment"># gift a heart</span>
+<span class="cmd">/hearts top</span>                     <span class="comment"># most hearts leaderboard</span>
+  </div>
+  <h2>💰 Economy</h2>
+  <div class="code">
+<span class="cmd">/balance</span>                <span class="comment"># your balance</span>
 <span class="cmd">/baltop</span>                 <span class="comment"># richest players</span>
-<span class="cmd">/pay</span> <span class="arg">&lt;player&gt; &lt;amount&gt;</span>  <span class="comment"># pay a player</span>
-<span class="cmd">/ah</span>                     <span class="comment"># open auction house</span>
+<span class="cmd">/pay</span> <span class="arg">&lt;player&gt; &lt;amount&gt;</span>  <span class="comment"># pay someone</span>
+<span class="cmd">/ah</span>                     <span class="comment"># auction house</span>
 <span class="cmd">/ah sell</span> <span class="arg">&lt;price&gt;</span>        <span class="comment"># sell item in hand</span>
-<span class="cmd">/lottery</span>                <span class="comment"># open lottery GUI</span>
-<span class="cmd">/daily</span>                  <span class="comment"># claim daily reward</span>
-      </div>
-
-      <h2>⚔️ Combat</h2>
-      <div class="code">
-<span class="cmd">/pvp join</span>              <span class="comment"># join PvP arena</span>
-<span class="cmd">/pvp leave</span>             <span class="comment"># leave PvP arena</span>
+<span class="cmd">/daily</span>                  <span class="comment"># daily reward</span>
+<span class="cmd">/lottery</span>                <span class="comment"># lottery</span>
+  </div>
+  <h2>⚔ Combat</h2>
+  <div class="code">
 <span class="cmd">/pvp stats</span>             <span class="comment"># your PvP stats</span>
-<span class="cmd">/pvptop</span>                <span class="comment"># leaderboard GUI</span>
-<span class="cmd">/duel</span> <span class="arg">&lt;player&gt;</span>         <span class="comment"># challenge to a duel</span>
-<span class="cmd">/duel accept</span>           <span class="comment"># accept a duel</span>
-<span class="cmd">/bounty</span>                <span class="comment"># view bounty board</span>
+<span class="cmd">/pvptop</span>                <span class="comment"># kill leaderboard</span>
+<span class="cmd">/bounty</span>                <span class="comment"># bounty board</span>
 <span class="cmd">/bounty set</span> <span class="arg">&lt;p&gt; &lt;amt&gt;</span>  <span class="comment"># place a bounty</span>
-      </div>
-
-      <h2>⚗️ Alchemy</h2>
-      <div class="code">
-<span class="cmd">/alch roll</span>             <span class="comment"># roll a Herb Roll</span>
-<span class="cmd">/alch process</span>          <span class="comment"># process Exotic Leaves</span>
-<span class="cmd">/alch refine</span>           <span class="comment"># refine Blue Crystals (near lab)</span>
-<span class="cmd">/alch brew</span>             <span class="comment"># brew Glowcap Brew</span>
-<span class="cmd">/alch use</span>              <span class="comment"># use herb in hand</span>
+  </div>
+  <h2>🏆 Progression</h2>
+  <div class="code">
+<span class="cmd">/rankup</span>   <span class="comment"># rank up</span>
+<span class="cmd">/ranks</span>    <span class="comment"># view rank ladder</span>
+<span class="cmd">/quests</span>   <span class="comment"># view quests</span>
+  </div>
+  <h2>⚗️ Alchemy</h2>
+  <div class="code">
 <span class="cmd">/alch recipes</span>          <span class="comment"># view all recipes</span>
 <span class="cmd">/blackmarket</span>           <span class="comment"># open Black Market</span>
 <span class="cmd">/alchtrade</span> <span class="arg">&lt;player&gt;</span>    <span class="comment"># trade with player</span>
-      </div>
+  </div>
+  <h2>🛡️ Claims</h2>
+  <div class="code">
+<span class="cmd">/claimlist</span>             <span class="comment"># your claims</span>
+<span class="cmd">/trust</span> <span class="arg">&lt;player&gt;</span>        <span class="comment"># trust player</span>
+<span class="cmd">/abandonclaim</span>          <span class="comment"># delete claim</span>
+  </div>
+</div>
 
-      <h2>🏆 Progression</h2>
-      <div class="code">
-<span class="cmd">/rankup</span>                <span class="comment"># rank up to next rank</span>
-<span class="cmd">/ranks</span>                 <span class="comment"># view rank ladder GUI</span>
-<span class="cmd">/quests</span>                <span class="comment"># view quests</span>
-      </div>
-
-      <h2>🛡️ Land Claims</h2>
-      <div class="code">
-<span class="cmd">/claimlist</span>             <span class="comment"># your claims and block count</span>
-<span class="cmd">/abandonclaim</span>          <span class="comment"># delete claim you're in</span>
-<span class="cmd">/trust</span> <span class="arg">&lt;player&gt;</span>        <span class="comment"># trust player in claim</span>
-<span class="cmd">/untrust</span> <span class="arg">&lt;player&gt;</span>      <span class="comment"># remove trust</span>
-      </div>
-    </div>
-
-  </main>
+</main>
 </div>
 
 <script>
-// ── Navigation ────────────────────────────────────────────────────────────────
 function show(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -1228,68 +828,53 @@ function show(page) {
   return false;
 }
 
-function toggleNav() {
-  document.getElementById('nav').classList.toggle('open');
-}
+function toggleNav() { document.getElementById('nav').classList.toggle('open'); }
 
-// ── Search ────────────────────────────────────────────────────────────────────
 const searchIndex = [
-  { title: 'Quick Start Guide',    page: 'quickstart',  keywords: 'new start join first kit' },
-  { title: 'Server Rules',         page: 'rules',        keywords: 'ban rule grief hack' },
-  { title: 'Economy System',       page: 'economy',      keywords: 'money earn pay balance' },
-  { title: 'Auction House',        page: 'auction',      keywords: 'sell buy ah listing' },
-  { title: 'Chest Shops',          page: 'shops',        keywords: 'shop chest sign sell' },
-  { title: 'Lottery',              page: 'lottery',      keywords: 'ticket win pot random' },
-  { title: 'Rank System',          page: 'ranks',        keywords: 'member vip mvp elite legend rankup' },
-  { title: 'Daily Rewards',        page: 'daily',        keywords: 'daily reward streak login' },
-  { title: 'Quests',               page: 'quests',       keywords: 'quest task mission' },
-  { title: 'PvP Arena',            page: 'pvp',          keywords: 'pvp fight arena kill' },
-  { title: 'Duels',                page: 'duels',        keywords: 'duel 1v1 challenge' },
-  { title: 'Bounty System',        page: 'bounty',       keywords: 'bounty head reward target' },
-  { title: 'Alchemy System',       page: 'alchemy',      keywords: 'herb mystic exotic glowcap crystal black market alch brew' },
-  { title: 'Land Claims',          page: 'claims',       keywords: 'claim protect land grief shovel' },
-  { title: 'Command Reference',    page: 'commands',     keywords: 'command list all help' },
+  { title: 'Quick Start',       page: 'quickstart', keywords: 'new start join first kit play' },
+  { title: 'Server Rules',      page: 'rules',      keywords: 'ban rule grief hack' },
+  { title: 'Heart System',      page: 'hearts',     keywords: 'hearts lifesteal steal kill eliminate' },
+  { title: 'Combat System',     page: 'combat',     keywords: 'combat tag pvp fight logout streak' },
+  { title: 'Economy',           page: 'economy',    keywords: 'money earn balance pay' },
+  { title: 'Auction House',     page: 'auction',    keywords: 'ah sell buy listing' },
+  { title: 'Chest Shops',       page: 'shops',      keywords: 'shop chest sign sell' },
+  { title: 'Lottery',           page: 'lottery',    keywords: 'ticket lottery win pot' },
+  { title: 'Crates',            page: 'crates',     keywords: 'crate key common rare legendary warlord' },
+  { title: 'Rank System',       page: 'ranks',      keywords: 'member vip mvp elite legend rankup' },
+  { title: 'Donor Ranks',       page: 'donor',      keywords: 'donor supporter patron tebex buy store' },
+  { title: 'Daily Rewards',     page: 'daily',      keywords: 'daily reward streak login' },
+  { title: 'Bounty System',     page: 'bounty',     keywords: 'bounty head reward' },
+  { title: 'Alchemy',           page: 'alchemy',    keywords: 'herb mystic exotic glowcap crystal black market' },
+  { title: 'Land Claims',       page: 'claims',     keywords: 'claim protect land shovel grief' },
+  { title: 'Commands',          page: 'commands',   keywords: 'command list all help' },
 ];
 
 function doSearch(q) {
   const box = document.getElementById('search-results');
   if (!q.trim()) { box.style.display = 'none'; return; }
-  const results = searchIndex.filter(item =>
-    item.title.toLowerCase().includes(q.toLowerCase()) ||
-    item.keywords.toLowerCase().includes(q.toLowerCase())
-  );
+  const results = searchIndex.filter(i =>
+    i.title.toLowerCase().includes(q.toLowerCase()) ||
+    i.keywords.toLowerCase().includes(q.toLowerCase()));
   if (!results.length) { box.style.display = 'none'; return; }
   box.innerHTML = results.map(r =>
     `<div class="search-result" onclick="show('${r.page}');document.getElementById('search').value='';hideResults()">
       <div class="search-result-title">${r.title}</div>
       <div class="search-result-page">wiki / ${r.page}</div>
-    </div>`
-  ).join('');
+    </div>`).join('');
   box.style.display = 'block';
 }
 
-function showResults() {
-  if (document.getElementById('search').value)
-    document.getElementById('search-results').style.display = 'block';
-}
+function showResults() { if (document.getElementById('search').value) document.getElementById('search-results').style.display = 'block'; }
+function hideResults() { document.getElementById('search-results').style.display = 'none'; }
 
-function hideResults() {
-  document.getElementById('search-results').style.display = 'none';
-}
-
-// ── Copy IP ───────────────────────────────────────────────────────────────────
 function copyIP() {
   navigator.clipboard.writeText('DxnnyCraft.minehut.gg').then(() => {
     const el = document.querySelector('.header-ip');
+    const orig = el.textContent;
     el.textContent = 'Copied!';
-    setTimeout(() => el.textContent = 'DxnnyCraft.minehut.gg', 1500);
+    setTimeout(() => el.textContent = orig, 1500);
   });
 }
-
-// ── Card clicks ───────────────────────────────────────────────────────────────
-document.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('click', e => { e.preventDefault(); });
-});
 </script>
 </body>
 </html>
